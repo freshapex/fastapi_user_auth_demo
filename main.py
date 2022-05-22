@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from starlette.responses import RedirectResponse
 
 from core.adminsite import site, auth, scheduler
-from apps import blog
+from apps import friendship,blog
 
 app = FastAPI(debug=True)
 # 导入已注册的后台管理类
-blog.setup(app)
+friendship.setup(app)
+# blog.setup(app)
 # 挂载后台管理系统
 site.mount_app(app)
 

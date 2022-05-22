@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(AmisSettings):
     '''项目配置'''
-    project_name: str = 'FastAPI example application'  # 项目名称
+    project_name: str = '上海友城系统'  # 项目名称
     secret_key: str
     allowed_hosts: List[str] = ["*"]
 
