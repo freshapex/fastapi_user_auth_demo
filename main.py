@@ -19,8 +19,9 @@ async def index():
 
 @app.on_event("startup")
 async def startup():
-    scheduler.start()
+    # scheduler.start()
     await site.create_db_and_tables()
     await auth.create_role_user(role_key='admin')
-    await auth.create_role_user(role_key='vip')
-    await auth.create_role_user(role_key='test')
+    await auth.create_role_user(role_key='shusers')
+    await auth.create_role_user(role_key='fcusers')
+    

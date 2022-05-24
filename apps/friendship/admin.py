@@ -3,7 +3,7 @@ from datetime import date
 from fastapi import HTTPException,status
 from fastapi_amis_admin.amis_admin import admin
 from fastapi_amis_admin.amis.components import PageSchema,ColumnImage,TableColumn
-from fastapi_amis_admin.crud.schema import Paginator
+from fastapi_amis_admin.crud.schema import Paginator,BaseApiOut
 from starlette.requests import Request
 from sqlmodel.sql.expression import Select,select
 from sqlmodel import SQLModel,or_,and_
@@ -99,6 +99,7 @@ class ShcityAdmin(admin.ModelAdmin):
                 result = await session.scalar(select(ShCity.id).where(ShCity.id==item_id[0],ShCity.user_id == request.user.id))
                 if result is None:
                     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="只能删除用户自己管理的城市")
+                    # return BaseApiOut(status=status.HTTP_403_FORBIDDEN, msg='只能删除用户自己管理的城市')  不能这样设置,否则报错
                 else:
                     result_friendship_id = await session.scalar(select(Friendship.id).where(Friendship.shcity_id==item_id[0]))
                     if result_friendship_id:
@@ -310,12 +311,13 @@ class FriendshipAdmin(admin.ModelAdmin):
 
             # 如果为外城用户，则只允许创建外城用户管理的城市与上海城区建立友好关系
             if await request.user.has_role(["fcusers"],session=session):
-                # 只能基于自己创建的城市建立友城关系       
-                friendcity_id_from_user =  await session.scalar(select(FriendCity.id).where(FriendCity.user_id==request.user.id))
+                # 只能基于自己创建的城市建立友城关系   scalars()才有all（）,scalar() 是一个标量    
+                friendcity_id_from_user =  await session.scalars(select(FriendCity.id).where(FriendCity.user_id==request.user.id))
                 if data["friendcity_id"] not in friendcity_id_from_user.all():
                     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="只能基于自己创建的城市建立友城关系")  
                 else:
                     return data
+        return None
                
 
     async def has_delete_permission(
@@ -344,7 +346,7 @@ class FriendshipAdmin(admin.ModelAdmin):
                 # 非管理员,外城用户可以删除Friendship中FriendCity中user_id 与自己user.id 相同的Friendship，且一次只能删除一个
                 if await request.user.has_role(["fcusers"], session):
                                     
-                    friendship_id_for_fcuser = await session.scalar(select(Friendship.id).where(ShCity.user_id==request.user.id,Friendship.shcity_id==ShCity.id,Friendship.id==item_id[0]))
+                    friendship_id_for_fcuser = await session.scalar(select(Friendship.id).where(FriendCity.user_id==request.user.id,Friendship.friendcity_id==FriendCity.id,Friendship.id==item_id[0]))
                     if friendship_id_for_fcuser:
                         return True
                     else:
