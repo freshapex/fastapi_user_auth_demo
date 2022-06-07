@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from starlette.responses import RedirectResponse
 
-from core.adminsite import site, auth, scheduler
+from core.adminsite import site, auth
+# from core.adminsite import site, auth, scheduler
 from apps import friendship,blog
 
 app = FastAPI(debug=True)

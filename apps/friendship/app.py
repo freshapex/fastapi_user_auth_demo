@@ -11,7 +11,7 @@ router = APIRouter(prefix="",tags=["Friendship"])
 
 @site.register_admin
 class FriendAPP(admin.AdminApp):
-    page_schema: Union[PageSchema, str] = PageSchema(label="友城关系应用",icon="")
+    page_schema: Union[PageSchema, str] = PageSchema(label="友城关系",icon="fa fa-wordpress")
     router_prefix: Optional[str] = "/friendship"
 
     def __init__(self, app: "admin.AdminApp"):
