@@ -1,6 +1,9 @@
 from datetime import date
 from fastapi_user_auth.site import AuthAdminSite
-from fastapi_scheduler import SchedulerAdmin
+# from fastapi_scheduler import SchedulerAdmin
+
+# from fastapi_amis_admin import i18n
+# i18n.set_language(language='zh_CN')
 
 from core.settings import settings
 
