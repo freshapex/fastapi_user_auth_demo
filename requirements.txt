@@ -16,5 +16,6 @@ jose>=1.0.0
 fastapi-user-auth
 sqlmodel
 aiosqlite
+pydantic[dotenv]
 
 
